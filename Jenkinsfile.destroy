@@ -1,0 +1,30 @@
+pipeline {
+  agent any
+
+  stages {
+    stage('Checkout') {
+      steps { git url: 'https://github.com/jrdevera08/RockU-IAC.git', branch: 'main' }
+    }
+
+    stage('Terraform Init') {
+      steps {
+        dir('terraform') {
+          sh 'terraform init'
+        }
+      }
+    }
+
+    stage('Terraform Destroy') {
+      steps {
+        dir('terraform') {
+          sh 'terraform destroy -auto-approve'
+        }
+      }
+    }
+  }
+
+  post {
+    success { echo '✅ Destroy pipeline finished.' }
+    failure { echo '❌ Destroy pipeline failed.' }
+  }
+}
